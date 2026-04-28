@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+
+  eureka-server:
+    build: ./eureka-microservice
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - microservices-network
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+    networks:
+      - microservices-network
+
+  compound-interest-service:
+    build: ./compound-interest-microservice/compound-interest-microservice
+    container_name: compound-interest-service
+    ports:
+      - "8081:8080"
+    depends_on:
+      - eureka-server
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    driver: bridge
